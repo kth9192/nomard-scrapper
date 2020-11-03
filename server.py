@@ -28,7 +28,7 @@ def report():
     else:
         return redirect("/")
 
-    return render_template("report.html", searchingby=word)
+    return render_template("report.html", searchingby=word, resultNums=len(jobs))
 
 
 app.run()
