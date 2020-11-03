@@ -2,11 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 
 LIMIT = 50
-URL = "https://www.stackoverflow.com/jobs?q=python&sort=i"
 
 
-def get_last_page():
-    result = requests.get(URL)
+def get_last_page(url):
+    result = requests.get(url)
     soup = BeautifulSoup(result.text, "html.parser")
     pages = soup.find("div", {"class": "s-pagination"}).find_all("a")
     last_page = pages[-2].get_text(strip=True)
@@ -31,11 +30,11 @@ def extract_job(html):
     }
 
 
-def extract_jobs(last_page):
+def extract_jobs(last_page, url):
     jobs = []
     for page in range(last_page):
         print(f"Scrapping SO : Page : {page}")
-        result = requests.get(f"{URL}&PG={page+1}")
+        result = requests.get(f"{url}&PG={page+1}")
         soup = BeautifulSoup(result.text, "html.parser")
         results = soup.find_all("div", {"class": "-job"})
         for result in results:
@@ -43,10 +42,9 @@ def extract_jobs(last_page):
             jobs.append(job)
     return jobs
 
-    return
-
 
 def get_jobs(word):
-    last_page = get_last_page()
-    jobs = extract_jobs(last_page)
+    url = f"https://www.stackoverflow.com/jobs?q={word}&sort=i"
+    last_page = get_last_page(url)
+    jobs = extract_jobs(last_page, url)
     return jobs
